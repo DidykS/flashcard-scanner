@@ -5,6 +5,7 @@ from typing import List, Tuple
 
 import cv2
 import numpy as np
+from google.cloud import vision
 from imutils import center_crop, rotate_without_cropping
 
 # Type aliases.
@@ -127,3 +128,43 @@ def crop_cards(
         cards.append(card)
 
     return cards
+
+
+def detect_text(
+    image: np.ndarray, heights: List[int]
+) -> List[List[vision.EntityAnnotation]]:
+    """Detect text in the image.
+
+    Args:
+        image (np.ndarray): The input image.
+        heights (List[int]): A list with the height of each card in the input image.
+
+    Returns:
+        A nested list with EntityAnnotation objects for each card.
+    """
+    client = vision.ImageAnnotatorClient()
+
+    _, encoded_image = cv2.imencode(".jpg", image)
+    content = encoded_image.tobytes()
+    image = vision.Image(content=content)
+
+    response = client.text_detection(image=image)
+
+    cards_data = []
+    card_data = []
+    total_height = heights.pop(0)
+    for text in response.text_annotations[1:]:
+        coords = [(v.x, v.y) for v in text.bounding_poly.vertices]
+        tl, tr, br, bl = coords
+        y = max(br[1], bl[1])
+        if y < total_height:
+            card_data.append(text)
+        else:
+            cards_data.append(card_data)
+            card_data = [text]
+            total_height += heights.pop(0)
+
+    if card_data:
+        cards_data.append(card_data)
+
+    return cards_data
