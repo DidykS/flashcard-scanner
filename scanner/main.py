@@ -1,7 +1,7 @@
 # scanner/main.py
 # Card detection, text recognition, etc.
 
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 import cv2
 import numpy as np
@@ -9,7 +9,7 @@ from google.cloud import vision
 from imutils import center_crop, rotate_without_cropping
 
 # Type aliases.
-Color = Tuple[int, int, int]
+Color = Tuple[np.uint8, np.uint8, np.uint8]
 RotatedRect = Tuple[Tuple[float, float], Tuple[float, float], float]
 
 
@@ -53,11 +53,11 @@ def detect_cards(
 
     median_area = np.median(areas)
     # The area of the contour must be +-15% of the median area.
-    max_diff = 0.15 * median_area
+    max_delta_area = 0.15 * median_area
 
     rectangles = []
     for cnt, area in zip(good_contours, areas):
-        if abs(median_area - area) < max_diff:
+        if abs(median_area - area) < max_delta_area:
             rectangles.append(cv2.minAreaRect(cnt))
 
     return rectangles
@@ -130,9 +130,7 @@ def crop_cards(
     return cards
 
 
-def detect_text(
-    image: np.ndarray, heights: List[int]
-) -> List[List[vision.EntityAnnotation]]:
+def detect_text(image: np.ndarray, heights: List[int]) -> List[List[Dict]]:
     """Detect text in the image.
 
     Args:
@@ -140,7 +138,7 @@ def detect_text(
         heights (List[int]): A list with the height of each card in the input image.
 
     Returns:
-        A nested list with EntityAnnotation objects for each card.
+        A nested list with text annotations for each card.
     """
     client = vision.ImageAnnotatorClient()
 
@@ -153,18 +151,58 @@ def detect_text(
     cards_data = []
     card_data = []
     total_height = heights.pop(0)
-    for text in response.text_annotations[1:]:
-        coords = [(v.x, v.y) for v in text.bounding_poly.vertices]
+    for annotation in response.text_annotations[1:]:
+        coords = [(v.x, v.y) for v in annotation.bounding_poly.vertices]
         tl, tr, br, bl = coords
         y = max(br[1], bl[1])
+
+        new_annotation = dict()
+        new_annotation["text"] = annotation.description
+        # Calculate the center coordinates of the text.
+        new_annotation["center"] = (
+            (tl[0] + tr[0] + br[0] + bl[0]) // 4,
+            (tl[1] + tr[1] + br[1] + bl[1]) // 4,
+        )
+
         if y < total_height:
-            card_data.append(text)
+            card_data.append(new_annotation)
         else:
             cards_data.append(card_data)
-            card_data = [text]
+            card_data = [new_annotation]
             total_height += heights.pop(0)
 
     if card_data:
         cards_data.append(card_data)
 
     return cards_data
+
+
+def get_text_rows(
+    annotations: List[Dict], max_delta_y: int = 10
+) -> List[List[str]]:
+    """Combine the annotations into the text rows.
+
+    Args:
+        annotations (List[Dict]): A list with text annotations.
+        max_delta_y (int, optional): The maximum difference between the y-axis coordinates. Defaults to 10 (pixels).
+
+    Returns:
+        A nested list with text strings.
+    """
+    rows = []
+    row = [annotations[0]["text"]]
+    prev_y = annotations[0]["center"][1]
+
+    for annotation in annotations[1:]:
+        y = annotation["center"][1]
+        if abs(prev_y - y) <= max_delta_y:
+            row.append(annotation["text"])
+        else:
+            rows.append(row)
+            row = [annotation["text"]]
+        prev_y = y
+
+    if row:
+        rows.append(row)
+
+    return rows
