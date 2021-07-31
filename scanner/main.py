@@ -206,3 +206,36 @@ def get_text_rows(
         rows.append(row)
 
     return rows
+
+
+def make_card_side(text_rows: List[List[str]]) -> Dict:
+    """Make one side of the card.
+
+    Args:
+        text_rows (List[List[str]]): A nested list with text strings for each row.
+
+    Returns:
+        A dictionary that represents one side of the card.
+    """
+    card_side = dict()
+
+    card_id = -1
+    topic = ""
+    if text_rows[0][0].isnumeric():
+        card_id = int(text_rows[0][0])
+        topic = " ".join(text_rows[0][1:])
+
+    card_side["id"] = card_id
+    card_side["topic"] = topic
+
+    rows_iter = iter(text_rows)
+    if card_id != -1:
+        next(rows_iter)
+
+    card_side["words"] = []
+    for row in rows_iter:
+        if row[0].startswith("[") or row[0].endswith("]"):
+            continue
+        card_side["words"].append(" ".join(row))
+
+    return card_side
