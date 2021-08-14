@@ -89,15 +89,16 @@ def center_crop(image: np.ndarray, dim: Tuple[int, int]) -> np.ndarray:
     return image[y : y + ch, x : x + cw]
 
 
-def vconcat_images(images: List[np.ndarray]) -> np.ndarray:
+def vconcat_images(images: List[np.ndarray]) -> Tuple[np.ndarray, List[int]]:
     """Concatenate the images vertically.
 
     Args:
         images (List[np.ndarray]): The list of images.
 
     Returns:
-        The concatenated image.
+        A new image and heights of the inner images after resizing.
     """
     min_width = min(img.shape[1] for img in images)
     resized_images = [resize(img, width=min_width) for img in images]
-    return cv2.vconcat(resized_images)
+    heights = [img.shape[0] for img in resized_images]
+    return cv2.vconcat(resized_images), heights
