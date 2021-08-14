@@ -239,3 +239,22 @@ def make_card_side(text_rows: List[List[str]]) -> Dict:
         card_side["words"].append(" ".join(row))
 
     return card_side
+
+
+def determine_language(card_side: Dict) -> str:
+    """Determine the language of the one side of the card.
+
+    Args:
+        card_side (Dict): One side of the card.
+
+    Returns:
+        The language of the one side of the card ("uk" or "en").
+    """
+    alphabet_uk = set("абвгґдеєжзиіїйклмнопрстуфхцчшщьюя")
+    word = card_side["words"][0]
+    letters = set(char for char in word if char.isalpha())
+
+    if letters.issubset(alphabet_uk):
+        return "uk"
+    else:
+        return "en"
