@@ -234,7 +234,7 @@ def make_card_side(text_rows: List[List[str]]) -> Dict:
 
     card_side["words"] = []
     for row in rows_iter:
-        if row[0].startswith("[") or row[0].endswith("]"):
+        if row[0].startswith("["):
             continue
         card_side["words"].append(" ".join(row))
 
