@@ -250,11 +250,19 @@ def determine_language(card_side: Dict) -> str:
     Returns:
         The language of the one side of the card ("uk" or "en").
     """
-    alphabet_uk = set("абвгґдеєжзиіїйклмнопрстуфхцчшщьюя")
+    alphabet_uk = "абвгґдеєжзиіїйклмнопрстуфхцчшщьюя"
     word = card_side["words"][0]
-    letters = set(char for char in word if char.isalpha())
 
-    if letters.issubset(alphabet_uk):
+    letters_uk = 0
+    letters_en = 0
+    for char in word.lower():
+        if char.isalpha():
+            if char in alphabet_uk:
+                letters_uk += 1
+            else:
+                letters_en += 1
+
+    if letters_uk > letters_en:
         return "uk"
     else:
         return "en"
