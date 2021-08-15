@@ -266,3 +266,35 @@ def determine_language(card_side: Dict) -> str:
         return "uk"
     else:
         return "en"
+
+
+def make_card(*card_sides: Dict) -> Dict:
+    """Create a card from one or two sides of the card.
+
+    Args:
+        *card_sides (Dict): The sides of the card.
+
+    Returns:
+        One single card.
+    """
+    card = dict()
+    card["id"] = card_sides[0]["id"]
+    card["languages"] = dict()
+
+    num_words = []
+    for card_side in card_sides:
+        lang_dict = dict()
+        lang_dict["topic"] = card_side["topic"]
+        lang_dict["words"] = card_side["words"]
+
+        lang = determine_language(card_side)
+        card["languages"][lang] = lang_dict
+
+        num_words.append(len(lang_dict["words"]))
+
+    if len(card_sides) == 1 or num_words[0] != num_words[-1]:
+        card["looks_fine"] = False
+    else:
+        card["looks_fine"] = True
+
+    return card
