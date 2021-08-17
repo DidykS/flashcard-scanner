@@ -1,12 +1,15 @@
 # scanner/main.py
 # Card detection, text recognition, etc.
 
+from argparse import Namespace
+from pathlib import Path
 from typing import Dict, List, Tuple
 
 import cv2
 import numpy as np
 from google.cloud import vision
-from imutils import center_crop, rotate_without_cropping
+from imutils import center_crop, rotate_without_cropping, vconcat_images
+from tqdm import tqdm
 
 # Type aliases.
 Color = Tuple[np.uint8, np.uint8, np.uint8]
@@ -298,3 +301,53 @@ def make_card(*card_sides: Dict) -> Dict:
         card["looks_fine"] = True
 
     return card
+
+
+def make_cards(params: Namespace) -> Dict:
+    """Conversion operations.
+
+    Args:
+        params (Namespace): Input parameters for operations.
+
+    Returns:
+        Results to save and load for later.
+    """
+    path = Path(params.dir_path)
+    img_paths = list(path.glob(f"*.{params.img_ext}"))
+
+    hsv_low = params.hsv_low
+    hsv_high = params.hsv_high
+
+    card_sides = dict()
+    cards = []
+    for p in tqdm(img_paths):
+        img = cv2.imread(str(p))
+
+        rectangles = detect_cards(img, (hsv_low, hsv_high))
+        imgs = crop_cards(img, rectangles)
+        inter_img, heights = vconcat_images(imgs)
+
+        cards_data = detect_text(inter_img, heights)
+
+        for c in cards_data:
+            text_rows = get_text_rows(c)
+            card_side = make_card_side(text_rows)
+
+            card_id = card_side["id"]
+            if card_id == -1:
+                cards.append(make_card(card_side))
+            else:
+                if card_id in card_sides:
+                    other_card_side = card_sides.pop(card_id)
+                    cards.append(make_card(card_side, other_card_side))
+                else:
+                    card_sides[card_id] = card_side
+
+    for card_side in card_sides.values():
+        cards.append(make_card(card_side))
+
+    d = {"cards": cards}
+    if hasattr(params, "name"):
+        d["name"] = params.name
+
+    return d
