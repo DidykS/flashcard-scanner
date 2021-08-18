@@ -312,7 +312,7 @@ def make_cards(params: Namespace) -> Dict:
     Returns:
         Results to save and load for later.
     """
-    path = Path(params.dir_path)
+    path = Path(params.path_to_dir)
     img_paths = list(path.glob(f"*.{params.img_ext}"))
 
     hsv_low = params.hsv_low
