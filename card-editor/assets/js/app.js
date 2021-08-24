@@ -5,7 +5,9 @@ import json from "../../B2-1.json" assert { type: "json" }
 const App = {
   data() {
     return {
-
+      title: "Card Editor",
+      originalArr: [], // originalArr - original data
+      copiedArr: [] // copiedArr - copied data from the original array
     }
   },
 }
