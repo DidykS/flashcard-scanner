@@ -16,17 +16,17 @@
     <!-- card__inner -->
     <div class="card__inner">
       <!-- card__item -->
-      <div class="card__item">
+      <div class="card__item" v-for="(item, idx) in copiedArr" :key="item.id">
         <!-- card front -->
         <div class="card__front">
           <div class="card__header">
-            <span></span> 
-            <span></span>
+            <span> {{ item.id}} </span> 
+            <span> {{ item.languages.en.topic }} </span>
           </div>
 
           <div class="card__body">
             <div class="card__content">
-              <span class="card__word"></span>
+              <span class="card__word" v-for="word in item.languages.en.words"> {{ word }} </span>
             </div>
           </div>
 
@@ -34,13 +34,13 @@
         <!-- card back -->
         <div class="card__back">
           <div class="card__header back">
-            <span></span> 
-            <span></span>
+            <span> {{ item.id }} </span> 
+            <span> {{ item.languages.uk.topic}} </span>
           </div>
 
           <div class="card__body">
             <div class="card__content">
-              <span class="card__word"></span>
+              <span class="card__word" v-for="word in item.languages.uk.words"> {{ word }} </span>
             </div>
           </div>
 
