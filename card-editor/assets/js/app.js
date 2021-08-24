@@ -10,6 +10,20 @@ const App = {
       copiedArr: [] // copiedArr - copied data from the original array
     }
   },
+  mounted() {
+    this.pushOriginal()
+    this.copyOriginal()
+  },
+  methods: {
+    // pushOriginal method:
+    pushOriginal() {
+      this.originalArr.push(...json)
+    },
+    // copyOriginal method:
+    copyOriginal() {
+      this.copiedArr = JSON.parse(JSON.stringify(this.originalArr))
+    }
+  }
 }
 
 Vue.createApp(App).mount("#container")
