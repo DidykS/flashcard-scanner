@@ -8,7 +8,6 @@ const App = {
     }
   },
   mounted() {
-    this.copyOriginal()
   },
   methods: {
     // push to the original array
@@ -16,8 +15,9 @@ const App = {
       let file = document.querySelector("#file").files[0]
       let data
 
-      data = await loadFile(file)
+      data = await this.loadFile(file)
       this.originalArr.push(...JSON.parse(data))
+      this.copyOriginal()
     },
     // the method that loads a file 
     loadFile(file) {
