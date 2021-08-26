@@ -1,6 +1,3 @@
-// impotr card JSON file from folder
-import json from "../../B2-1.json" assert { type: "json" }
-
 // start vue app
 const App = {
   data() {
@@ -11,13 +8,29 @@ const App = {
     }
   },
   mounted() {
-    this.pushOriginal()
     this.copyOriginal()
   },
   methods: {
-    // pushOriginal method:
-    pushOriginal() {
-      this.originalArr.push(...json)
+    // push to the original array
+    async originalPush() {
+      let file = document.querySelector("#file").files[0]
+      let data
+
+      data = await loadFile(file)
+      this.originalArr.push(...JSON.parse(data))
+    },
+    // the method that loads a file 
+    loadFile(file) {
+      return new Promise((resolve, reject) => {
+        let reader = new FileReader()
+
+        reader.onload = function(event) {
+          let data = event.target.result
+          resolve(data)
+        }
+
+        reader.readAsText(file)
+      })
     },
     // copyOriginal method:
     copyOriginal() {
