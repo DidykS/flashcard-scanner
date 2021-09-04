@@ -1,65 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Card Review</title>
-  <!-- css -->
-  <link rel="stylesheet" href="./assets/css/style.css">
-</head>
-<body>
-  <!-- container -->
-  <div id="container" class="container">
-    
-    <h1 class="title"> {{ title }} </h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Card Review</title>
+    <!-- css -->
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body>
+    <!-- container -->
+    <div id="container" class="container">
+      <h1 class="title">{{ title }}</h1>
 
-    <input type="file" id="file">
-    <button id="load" @click="originalPush">Load JSON File</button>
-    <button id="download" @click="downloadFile">Download JSON File</button>
-    <!-- card__inner -->
-    <div class="card__inner">
-      <!-- card__item -->
-      <div class="card__item" v-for="(item, idx) in copiedArr" :key="item.id">
-        <!-- card front -->
-        <div class="card__front">
-          <div class="card__header">
-            <span> {{ item.id}} <div class="div"><input type="text" class="input" @keyup.enter="changeItemId(item, $event)"></div> </span> 
-            <span> {{ item.languages.en.topic }} <div class="div"><input type="text" class="input" @keyup.enter="changeItemEnTopic(item, $event)"></div> </span>
-          </div>
-
-          <div class="card__body">
-            <div class="card__content">
-              <span class="card__word" v-for="word in item.languages.en.words"> {{ word }} </span>
+      <input type="file" id="file" />
+      <button id="load" @click="originalPush">Load JSON File</button>
+      <button id="download" @click="downloadFile">Download JSON File</button>
+      <!-- card__inner -->
+      <div class="card__inner">
+        <!-- card__item -->
+        <div class="card__item" v-for="(item, idx) in copiedArr" :key="item.id">
+          <!-- card front -->
+          <div class="card__front">
+            <div class="card__header">
+              <span>
+                {{ item.id}}
+                <div class="div">
+                  <input
+                    type="text"
+                    class="input"
+                    @keyup.enter="changeItemId(item, $event)"
+                  />
+                </div>
+              </span>
+              <span>
+                {{ item.languages.en.topic }}
+                <div class="div">
+                  <input
+                    type="text"
+                    class="input"
+                    @keyup.enter="changeItemEnTopic(item, $event)"
+                  />
+                </div>
+              </span>
             </div>
-            <input type="text" @keyup.enter="changeEnWords(item, $event)">
-          </div>
 
-        </div> <!-- card__front -->
-        <!-- card back -->
-        <div class="card__back">
-          <div class="card__header back">
-            <span> {{ item.id }}</span> 
-            <span> {{ item.languages.uk.topic}} <div class="div"><input type="text" class="input" @keyup.enter="changeItemUkTopic(item, $event)"></div> </span>
-          </div>
-
-          <div class="card__body">
-            <div class="card__content">
-              <span class="card__word" v-for="word in item.languages.uk.words"> {{ word }} </span>
+            <div class="card__body">
+              <div class="card__content">
+                <span
+                  class="card__word"
+                  v-for="word in item.languages.en.words"
+                >
+                  {{ word }}
+                </span>
+              </div>
+              <input type="text" @keyup.enter="changeEnWords(item, $event)" />
             </div>
-            <input type="text" @keyup.enter="changeUkWords(item, $event)">
           </div>
+          <!-- card__front -->
+          <!-- card back -->
+          <div class="card__back">
+            <div class="card__header back">
+              <span> {{ item.id }}</span>
+              <span>
+                {{ item.languages.uk.topic}}
+                <div class="div">
+                  <input
+                    type="text"
+                    class="input"
+                    @keyup.enter="changeItemUkTopic(item, $event)"
+                  />
+                </div>
+              </span>
+            </div>
 
-        </div> <!-- /back -->
-      </div> <!-- /card__item -->
-    </div> <!-- /card__inner -->
-    
-  </div> <!-- /container -->
+            <div class="card__body">
+              <div class="card__content">
+                <span
+                  class="card__word"
+                  v-for="word in item.languages.uk.words"
+                >
+                  {{ word }}
+                </span>
+              </div>
+              <input type="text" @keyup.enter="changeUkWords(item, $event)" />
+            </div>
+          </div>
+          <!-- /back -->
+        </div>
+        <!-- /card__item -->
+      </div>
+      <!-- /card__inner -->
+    </div>
+    <!-- /container -->
 
-
-  <!-- vue3 cdn -->
-  <script src="https://unpkg.com/vue@next"></script>
-  <!-- javascript -->
-  <script type="module" src="./assets/js/app.js"></script>
-</body>
+    <!-- vue3 cdn -->
+    <script src="https://unpkg.com/vue@next"></script>
+    <!-- javascript -->
+    <script src="./assets/js/app.js"></script>
+  </body>
 </html>
