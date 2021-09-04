@@ -35,6 +35,33 @@ const App = {
     // copyOriginal method:
     copyOriginal() {
       this.copiedArr = JSON.parse(JSON.stringify(this.originalArr))
+    },
+    // change item id
+    changeItemId(item, e) {
+      item.id = Number(e.target.value)
+      e.target.value = ""
+    },
+    // change item en topic
+    changeItemEnTopic(item, e) {
+      item.languages.en.topic = e.target.value
+      e.target.value = ""
+    },
+    // change en words
+    changeEnWords(item, e) {
+      let target = e.target.value
+      item.languages.en.words = target.split(",")
+      e.target.value = ""
+    },
+    // change item uk topic
+    changeItemUkTopic(item, e) {
+      item.languages.uk.topic = e.target.value
+      e.target.value = ""
+    },
+    // change en words
+    changeUkWords(item, e) {
+      let target = e.target.value
+      item.languages.uk.words = target.split(",")
+      e.target.value = ""
     }
   }
 }

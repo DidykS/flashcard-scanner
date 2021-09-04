@@ -84,3 +84,39 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 24px;
   font-weight: 500;
 }
+
+/* INPUT */
+.div {
+  display: inline-block;
+  position: relative;
+}
+
+.div::after {
+  content: "";
+  background-color: #000;
+  width: 2px;
+  height: 7px;
+  position: absolute;
+  top: 17px;
+  right: 0;
+  transform: rotate(135deg);
+}
+
+.input {
+  border: none;
+  color: #000;
+  font-size: 15px;
+  font-weight: 600;
+  background-color: transparent;
+  width: 20px;
+  height: 20px;
+  padding: 5px;
+  border: solid 2px #000;
+  border-radius: 35px;
+  transition: width 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  width: 100px;
+}

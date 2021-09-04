@@ -23,28 +23,30 @@
         <!-- card front -->
         <div class="card__front">
           <div class="card__header">
-            <span> {{ item.id}} </span> 
-            <span> {{ item.languages.en.topic }} </span>
+            <span> {{ item.id}} <div class="div"><input type="text" class="input" @keyup.enter="changeItemId(item, $event)"></div> </span> 
+            <span> {{ item.languages.en.topic }} <div class="div"><input type="text" class="input" @keyup.enter="changeItemEnTopic(item, $event)"></div> </span>
           </div>
 
           <div class="card__body">
             <div class="card__content">
               <span class="card__word" v-for="word in item.languages.en.words"> {{ word }} </span>
             </div>
+            <input type="text" @keyup.enter="changeEnWords(item, $event)">
           </div>
 
         </div> <!-- card__front -->
         <!-- card back -->
         <div class="card__back">
           <div class="card__header back">
-            <span> {{ item.id }} </span> 
-            <span> {{ item.languages.uk.topic}} </span>
+            <span> {{ item.id }}</span> 
+            <span> {{ item.languages.uk.topic}} <div class="div"><input type="text" class="input" @keyup.enter="changeItemUkTopic(item, $event)"></div> </span>
           </div>
 
           <div class="card__body">
             <div class="card__content">
               <span class="card__word" v-for="word in item.languages.uk.words"> {{ word }} </span>
             </div>
+            <input type="text" @keyup.enter="changeUkWords(item, $event)">
           </div>
 
         </div> <!-- /back -->
