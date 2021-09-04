@@ -62,6 +62,25 @@ const App = {
       let target = e.target.value
       item.languages.uk.words = target.split(",")
       e.target.value = ""
+    },
+    // download function
+    download(fileName, content) {
+      let element = document.createElement("a")
+      element.style.display = "none"
+
+      element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(content))
+
+      element.setAttribute("download", fileName)
+      document.body.appendChild(element)
+      element.click()
+      document.body.removeChild(element)
+    },
+    // Here, when the user clicks the download button, start download
+    downloadFile() {
+      // let content = JSON.stringify(this.copied)
+      let content = JSON.stringify(this.copiedArr)
+      let fileName = "test.json"
+      this.download(fileName, content)
     }
   }
 }
