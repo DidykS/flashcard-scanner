@@ -78,7 +78,7 @@ const App = {
     // change en words
     changeEnWords(item, e) {
       let target = e.target.value
-      item.languages.en.words = target.split(",")
+      item.languages.en.words = target.split("/")
       e.target.value = ""
     },
     // change item uk topic
@@ -89,7 +89,7 @@ const App = {
     // change en words
     changeUkWords(item, e) {
       let target = e.target.value
-      item.languages.uk.words = target.split(",")
+      item.languages.uk.words = target.split("/")
       e.target.value = ""
     },
     // download function
