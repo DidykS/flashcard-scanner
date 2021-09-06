@@ -4,11 +4,10 @@ const App = {
     return {
       title: "Card Editor",
       originalArr: [], // originalArr - original data
-      copiedArr: [] // copiedArr - copied data from the original array
+      copiedArr: [], // copiedArr - copied data from the original array
     }
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     // push to the original array
     async originalPush() {
@@ -16,15 +15,45 @@ const App = {
       let data
 
       data = await this.loadFile(file)
-      this.originalArr.push(...JSON.parse(data))
+      // let test = JSON.parse(data)
+      let test = JSON.parse(data)
+      this.originalArr = test.cards
+
+      // card verification
+      this.originalArr.forEach((item) => {
+        if (item.languages == undefined) {
+          item.languages = {
+            en: {
+              topic: "Test",
+              words: ["test", "test2"],
+            },
+            uk: {
+              topic: "Test",
+              words: ["test", "test2"],
+            },
+          }
+        } else if (item.languages.en == undefined) {
+          item.languages.en = {
+            topic: "Test",
+            words: ["test", "test2"],
+          }
+        } else if (item.languages.uk == undefined) {
+          item.languages.uk = {
+            topic: "Test",
+            words: ["test", "test2"],
+          }
+        }
+      })
+
+      // copy originalArr
       this.copyOriginal()
     },
-    // the method that loads a file 
+    // the method that loads a file
     loadFile(file) {
       return new Promise((resolve, reject) => {
         let reader = new FileReader()
 
-        reader.onload = function(event) {
+        reader.onload = function (event) {
           let data = event.target.result
           resolve(data)
         }
@@ -68,7 +97,10 @@ const App = {
       let element = document.createElement("a")
       element.style.display = "none"
 
-      element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(content))
+      element.setAttribute(
+        "href",
+        "data:text/plain;charset=utf-8," + encodeURIComponent(content)
+      )
 
       element.setAttribute("download", fileName)
       document.body.appendChild(element)
@@ -81,8 +113,8 @@ const App = {
       let content = JSON.stringify(this.copiedArr)
       let fileName = "test.json"
       this.download(fileName, content)
-    }
-  }
+    },
+  },
 }
 
 Vue.createApp(App).mount("#container")
